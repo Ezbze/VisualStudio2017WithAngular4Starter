@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Angular Started Kit with Webpack and VS 2017</title>
+	<script type="text/javascript">
+		@{ //entry point and connectivity to vs 2017
+            // so npm install to begin, then npm run build to create the dist, node_modules etc.. folders
+            var path = HttpContext.Current.Server.MapPath("~/dist/");
+            var dirInfo = new DirectoryInfo(path);
+
+            //Order is important
+            // polyfill - handles discrepancies between browsers
+            // vendor   - handles the vendor stuff
+            // main     - has the main bundled js file
+            ViewBag.inlineUrl = "~/dist/" + Path.GetFileName(dirInfo.GetFiles("inline.*.js").OrderByDescending(f => f.LastWriteTime).First().FullName);
+            ViewBag.polyfillsUrl = "~/dist/" + Path.GetFileName(dirInfo.GetFiles("polyfills.*.js").OrderByDescending(f => f.LastWriteTime).First().FullName);
+            ViewBag.stylesUrl = "~/dist/" + Path.GetFileName(dirInfo.GetFiles("styles.*.js").OrderByDescending(f => f.LastWriteTime).First().FullName);
+            ViewBag.vendorUrl = "~/dist/" + Path.GetFileName(dirInfo.GetFiles("vendor.*.js").OrderByDescending(f => f.LastWriteTime).First().FullName);
+            ViewBag.appUrl = "~/dist/" + Path.GetFileName(dirInfo.GetFiles("main.*.js").OrderByDescending(f => f.LastWriteTime).First().FullName);
+		}
+	</script>
+</head>
+<body>
+     @RenderBody()
+
+     <div>
+	    <app-root></app-root>
+     </div>
+
+  <script type="text/javascript" src="@Url.Content(ViewBag.inlineUrl)"></script>
+  <script type="text/javascript" src="@Url.Content(ViewBag.polyfillsUrl)"></script>
+  <script type="text/javascript" src="@Url.Content(ViewBag.vendorUrl)"></script>
+  <script type="text/javascript" src="@Url.Content(ViewBag.stylesUrl)"></script>
+  <script type="text/javascript" src="@Url.Content(ViewBag.appUrl)"></script>
+
+</body>
+</html>
